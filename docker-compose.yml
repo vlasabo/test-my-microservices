@@ -1,0 +1,52 @@
+version: '3.8'
+services:
+  item-service:
+    build: ./item
+    image: item
+    platform: linux/x86_64
+    container_name: item
+    ports:
+      - "9090:9090"
+    depends_on:
+      - item-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://item-db:5432/item
+      - DB_USER=postgres
+      - DB_PASSWORD=root
+
+  thing-service:
+    build: ./thing
+    image: thing
+    platform: linux/x86_64
+    container_name: thing
+    ports:
+      - "8080:8080"
+    depends_on:
+      - thing-db
+      - item-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://thing-db:5432/thing
+      - DB_USER=postgres
+      - DB_PASSWORD=root
+
+  item-db:
+    image: postgres:13.7-alpine
+    container_name: item-db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=item
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+
+  thing-db:
+    image: postgres:13.7-alpine
+    container_name: thing-db
+    restart: always
+    ports:
+      - "5433:5433"
+    environment:
+      - POSTGRES_DB=thing
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
