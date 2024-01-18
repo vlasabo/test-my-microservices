@@ -1,0 +1,7 @@
+spring:
+    application:
+        name: thing
+    profiles:
+        active: prod
+    config:
+        import: optional:configserver:http://config-server:8071
