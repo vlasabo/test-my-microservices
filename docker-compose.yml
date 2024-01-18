@@ -9,10 +9,8 @@ services:
       - "9090:9090"
     depends_on:
       - item-db
-    environment:
-      - ITEM_DATASOURCE_URL=jdbc:postgresql://item-db:5432/item
-      - DB_USER=postgres
-      - DB_PASSWORD=root
+      - config-server
+    restart: on-failure
 
   thing-service:
     build: ./thing
@@ -24,10 +22,7 @@ services:
     depends_on:
       - thing-db
       - item-service
-    environment:
-      - THING_DATASOURCE_URL=jdbc:postgresql://thing-db:5432/thing
-      - DB_USER=postgres
-      - DB_PASSWORD=root
+    restart: on-failure
 
   config-server:
     build: ./config-server
