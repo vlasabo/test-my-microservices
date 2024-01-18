@@ -10,7 +10,7 @@ services:
     depends_on:
       - item-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://item-db:5432/item
+      - ITEM_DATASOURCE_URL=jdbc:postgresql://item-db:5432/item
       - DB_USER=postgres
       - DB_PASSWORD=root
 
@@ -25,9 +25,17 @@ services:
       - thing-db
       - item-service
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://thing-db:5432/thing
+      - THING_DATASOURCE_URL=jdbc:postgresql://thing-db:5432/thing
       - DB_USER=postgres
       - DB_PASSWORD=root
+
+  config-server:
+    build: ./config-server
+    image: config-server
+    platform: linux/x86_64
+    container_name: config-server
+    ports:
+      - "8071:8071"
 
   item-db:
     image: postgres:13.7-alpine
