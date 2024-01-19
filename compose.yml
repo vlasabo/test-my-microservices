@@ -1,5 +1,12 @@
-version: '3.8'
 services:
+  config-server:
+    build: ./config-server
+    image: config-server
+    platform: linux/x86_64
+    container_name: config-server
+    ports:
+      - "8071:8071"
+
   item-service:
     build: ./item
     image: item
@@ -21,16 +28,8 @@ services:
       - "8080:8080"
     depends_on:
       - thing-db
-      - item-service
+      - config-server
     restart: on-failure
-
-  config-server:
-    build: ./config-server
-    image: config-server
-    platform: linux/x86_64
-    container_name: config-server
-    ports:
-      - "8071:8071"
 
   item-db:
     image: postgres:13.7-alpine
