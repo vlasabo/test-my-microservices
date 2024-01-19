@@ -5,12 +5,5 @@ spring:
         active: prod
     config:
         import: optional:configserver:http://config-server:8071
-    cloud:
-        config:
-            retry:
-                max-attempts: 50
-                initial-interval: 1500
-                multiplier: 1.5
-                max-interval: 20000
 item:
     example: "default"

@@ -6,6 +6,16 @@ services:
     container_name: config-server
     ports:
       - "8071:8071"
+  eureka-server:
+    build: ./eureka-server
+    image: eureka-server
+    platform: linux/x86_64
+    container_name: eureka-server
+    ports:
+      - "8070:8070"
+    depends_on:
+      - config-server
+    restart: on-failure
 
   item-service:
     build: ./item
@@ -54,15 +64,15 @@ services:
       - POSTGRES_PASSWORD=root
 
 #  vault здесь только для тестов, в девмоде. Настройки по прежнему лподтянутся из yaml
-  vault:
-    image: vault:1.13.3
-    container_name: vault
-    ports:
-      - "8200:8200"
-    restart: unless-stopped
-    volumes:
-      - ./logs:/vault/logs
-      - ./file:/vault/file
-      - ./config:/vault/config
-    cap_add:
-      - IPC_LOCK
+#  vault:
+#    image: vault:1.13.3
+#    container_name: vault
+#    ports:
+#      - "8200:8200"
+#    restart: unless-stopped
+#    volumes:
+#      - ./logs:/vault/logs
+#      - ./file:/vault/file
+#      - ./config:/vault/config
+#    cap_add:
+#      - IPC_LOCK
