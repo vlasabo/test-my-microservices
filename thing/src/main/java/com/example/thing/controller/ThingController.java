@@ -28,6 +28,7 @@ public class ThingController {
         new Thread(() -> thingService.getThingByItemId(itemId)).start();
         new Thread(() -> thingService.getThingByItemId(itemId)).start();
         new Thread(() -> thingService.getThingByItemId(itemId)).start();
+        new Thread(() -> thingService.getThingByItemId(itemId)).start();
         return new Thing();
     }
 
