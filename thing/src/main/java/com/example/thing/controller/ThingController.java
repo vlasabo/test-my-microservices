@@ -22,9 +22,8 @@ public class ThingController {
     }
 
     @GetMapping(value = "/itemId/{itemId}")
-    public ResponseEntity<Thing> getThingByItemId(@PathVariable long itemId) {
-        return new ResponseEntity<>(thingService.getThingByItemId(itemId).orElseThrow(NotFoundException::new),
-                HttpStatus.OK);
+    public Thing getThingByItemId(@PathVariable long itemId) {
+        return thingService.getThingByItemId(itemId).orElseThrow(NotFoundException::new);
     }
 
     @PostMapping(value = "add")
