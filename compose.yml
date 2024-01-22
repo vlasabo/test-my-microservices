@@ -41,6 +41,18 @@ services:
       - config-server
     restart: on-failure
 
+  thing-service2:
+    build: ./thing
+    image: thing2
+    platform: linux/x86_64
+    container_name: thing2
+    ports:
+      - "8081:8081"
+    depends_on:
+      - thing-db
+      - config-server
+    restart: on-failure
+
   item-db:
     image: postgres:13.7-alpine
     container_name: item-db
