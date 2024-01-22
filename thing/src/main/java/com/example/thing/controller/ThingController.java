@@ -23,7 +23,12 @@ public class ThingController {
 
     @GetMapping(value = "/itemId/{itemId}")
     public Thing getThingByItemId(@PathVariable long itemId) {
-        return thingService.getThingByItemId(itemId).orElseThrow(NotFoundException::new);
+        new Thread(() -> thingService.getThingByItemId(itemId)).start();
+        new Thread(() -> thingService.getThingByItemId(itemId)).start();
+        new Thread(() -> thingService.getThingByItemId(itemId)).start();
+        new Thread(() -> thingService.getThingByItemId(itemId)).start();
+        new Thread(() -> thingService.getThingByItemId(itemId)).start();
+        return new Thing();
     }
 
     @PostMapping(value = "add")
