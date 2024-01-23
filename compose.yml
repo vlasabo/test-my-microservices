@@ -6,6 +6,7 @@ services:
     container_name: config-server
     ports:
       - "8071:8071"
+
   eureka-server:
     build: ./eureka-server
     image: eureka-server
@@ -15,6 +16,15 @@ services:
       - "8070:8070"
     depends_on:
       - config-server
+    restart: on-failure
+
+  api-gateway:
+    build: ./api-gateway
+    image: api-gateway
+    platform: linux/x86_64
+    container_name: api-gateway
+    ports:
+      - "8072:8072"
     restart: on-failure
 
   item-service:
