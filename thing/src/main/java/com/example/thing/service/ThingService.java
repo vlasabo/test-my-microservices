@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.Random;
 
 @RequiredArgsConstructor
 @Service
@@ -26,20 +25,7 @@ public class ThingService {
     @CircuitBreaker(name = "thingService")
     @RateLimiter(name = "thingService")
     public Optional<Thing> getThingByItemId(long itemId) {
-        simulateException();
         return thingRepository.getThingByItemId(itemId);
     }
 
-    private void simulateException() {
-        Random rand = new Random();
-        int randomNum = rand.nextInt(5) + 1;
-        try {
-            Thread.sleep(randomNum * 1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-//        if (randomNum % 2 == 1) {
-//            throw new RuntimeException();
-//        }
-    }
 }
