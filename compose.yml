@@ -6,6 +6,8 @@ services:
     container_name: config-server
     ports:
       - "8071:8071"
+    networks:
+      backend:
 
   eureka-server:
     build: ./eureka-server
@@ -14,6 +16,8 @@ services:
     container_name: eureka-server
     ports:
       - "8070:8070"
+    networks:
+      backend:
     depends_on:
       - config-server
     restart: on-failure
@@ -25,6 +29,8 @@ services:
     container_name: api-gateway
     ports:
       - "8072:8072"
+    networks:
+      backend:
     restart: on-failure
 
   item-service:
@@ -34,6 +40,8 @@ services:
     container_name: item
     ports:
       - "9090:9090"
+    networks:
+      backend:
     depends_on:
       - item-db
       - config-server
@@ -45,7 +53,9 @@ services:
     platform: linux/x86_64
     container_name: thing
     ports:
-      - "8080:8080"
+      - "8282:8282"
+    networks:
+      backend:
     depends_on:
       - thing-db
       - config-server
@@ -58,6 +68,8 @@ services:
     container_name: thing2
     ports:
       - "8081:8081"
+    networks:
+      backend:
     depends_on:
       - thing-db
       - config-server
@@ -69,6 +81,8 @@ services:
     restart: unless-stopped
     ports:
       - "5432:5432"
+    networks:
+      backend:
     environment:
       - POSTGRES_DB=item
       - POSTGRES_USER=postgres
@@ -80,11 +94,47 @@ services:
     restart: unless-stopped
     ports:
       - "5433:5432"
+    networks:
+      backend:
     environment:
       - POSTGRES_DB=thing
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=root
 
+  keycloak-db:
+    image: postgres:13.7-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=keycloak
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+    networks:
+      backend:
+
+  keycloak:
+    depends_on:
+      keycloak-db:
+        condition: service_started
+    image: jboss/keycloak
+    restart: always
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      DB_VENDOR: postgres
+      DB_ADDR: keycloak-db
+      DB_DATABASE: keycloak
+      DB_USER: postgres
+      DB_PASSWORD: root
+    ports:
+      - "8080:8080"
+    networks:
+      backend:
+        aliases:
+          - "keycloak"
+
+networks:
+  backend:
+    driver: bridge
 #  vault здесь только для тестов, в девмоде. Настройки по прежнему подтянутся из yaml
 #  vault:
 #    image: vault:1.13.3
