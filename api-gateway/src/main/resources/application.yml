@@ -5,3 +5,17 @@ spring:
     active: prod
   config:
     import: optional:configserver:http://config-server:8071
+  cloud:
+    gateway:
+      filter:
+        remove-hop-by-hop:
+          headers:
+            -Cookie
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/auth/realms/micro-realm
+
+  main:
+    allow-bean-definition-overriding: true
