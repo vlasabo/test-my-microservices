@@ -6,8 +6,7 @@ services:
     container_name: config-server
     ports:
       - "8071:8071"
-    networks:
-      backend:
+
 
   eureka-server:
     build: ./eureka-server
@@ -16,8 +15,6 @@ services:
     container_name: eureka-server
     ports:
       - "8070:8070"
-    networks:
-      backend:
     depends_on:
       - config-server
     restart: on-failure
@@ -29,8 +26,6 @@ services:
     container_name: api-gateway
     ports:
       - "8072:8072"
-    networks:
-      backend:
     restart: on-failure
 
   item-service:
@@ -40,8 +35,6 @@ services:
     container_name: item
     ports:
       - "9090:9090"
-    networks:
-      backend:
     depends_on:
       - item-db
       - config-server
@@ -54,8 +47,6 @@ services:
     container_name: thing
     ports:
       - "8282:8282"
-    networks:
-      backend:
     depends_on:
       - thing-db
       - config-server
@@ -68,8 +59,6 @@ services:
     container_name: thing2
     ports:
       - "8081:8081"
-    networks:
-      backend:
     depends_on:
       - thing-db
       - config-server
@@ -81,8 +70,6 @@ services:
     restart: unless-stopped
     ports:
       - "5432:5432"
-    networks:
-      backend:
     environment:
       - POSTGRES_DB=item
       - POSTGRES_USER=postgres
@@ -94,8 +81,6 @@ services:
     restart: unless-stopped
     ports:
       - "5433:5432"
-    networks:
-      backend:
     environment:
       - POSTGRES_DB=thing
       - POSTGRES_USER=postgres
@@ -108,8 +93,6 @@ services:
       - POSTGRES_DB=keycloak
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=root
-    networks:
-      backend:
 
   keycloak:
     depends_on:
@@ -118,8 +101,8 @@ services:
     image: jboss/keycloak
     restart: always
     environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
+      #      KEYCLOAK_USER: admin
+      #      KEYCLOAK_PASSWORD: admin
       DB_VENDOR: postgres
       DB_ADDR: keycloak-db
       DB_DATABASE: keycloak
@@ -127,14 +110,48 @@ services:
       DB_PASSWORD: root
     ports:
       - "8080:8080"
-    networks:
-      backend:
-        aliases:
-          - "keycloak"
 
-networks:
-  backend:
-    driver: bridge
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    expose:
+      - "2181"
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    expose:
+      - "9093"
+    environment:
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9093,OUTSIDE://1.2.3.4:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf"
+      KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_CREATE_TOPICS: "newItem"
+      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
+    depends_on:
+      - zookeeper
+    volumes:
+      - ./:/etc/kafka
+
+
+
+
+  redisserver:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+
+
 #  vault здесь только для тестов, в девмоде. Настройки по прежнему подтянутся из yaml
 #  vault:
 #    image: vault:1.13.3

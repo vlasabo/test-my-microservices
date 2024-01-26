@@ -13,6 +13,13 @@ spring:
                 multiplier: 1.5
                 max-interval: 20000
 
+    kafka:
+      consumer:
+        group-id: newItem
+
+logging:
+  level:
+    kafka: debug
 
 resilience4j:
   circuitbreaker:

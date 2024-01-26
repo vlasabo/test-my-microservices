@@ -1,0 +1,14 @@
+{
+    "type": "record",
+    "name": "SimpleMessage",
+    "namespace": "com.example.item.schema",
+    "fields": [
+    {
+        "name": "id",
+        "type": "int"
+    },
+    {
+        "name": "thingName",
+        "type": "string"
+    }]
+}
