@@ -30,4 +30,9 @@ public class ThingController {
     public ResponseEntity<Thing> addThing(@RequestBody Thing thing) {
         return new ResponseEntity<>(thingService.addThing(thing), HttpStatus.CREATED); //упрощено без ДТО
     }
+
+    @GetMapping(value = "getThingName")
+    public ResponseEntity<String> getThingNameByItemId(long itemId){
+        return new ResponseEntity<>(thingService.getThingNameByItemId(itemId), HttpStatus.OK);
+    }
 }

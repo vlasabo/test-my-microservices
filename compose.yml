@@ -150,6 +150,8 @@ services:
     image: redis:alpine
     ports:
       - 6379:6379
+    environment:
+      REDIS_ARGS: "--requirepass redisRoot" #должен бы лежать в .env, но это не прод
 
 
 #  vault здесь только для тестов, в девмоде. Настройки по прежнему подтянутся из yaml
