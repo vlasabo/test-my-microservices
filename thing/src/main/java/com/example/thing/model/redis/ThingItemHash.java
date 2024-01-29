@@ -1,10 +1,7 @@
 package com.example.thing.model.redis;
 
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
@@ -15,8 +12,9 @@ import java.io.Serializable;
  */
 @Getter @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
-@RedisHash("Thing")
+@RedisHash("ThingItemHash")
 public class ThingItemHash  implements Serializable {
 
     @Id

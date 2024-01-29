@@ -31,8 +31,8 @@ public class ThingController {
         return new ResponseEntity<>(thingService.addThing(thing), HttpStatus.CREATED); //упрощено без ДТО
     }
 
-    @GetMapping(value = "getThingName")
-    public ResponseEntity<String> getThingNameByItemId(long itemId){
+    @GetMapping(value = "getThingName/{itemId}")
+    public ResponseEntity<String> getThingNameByItemId(@PathVariable long itemId){
         return new ResponseEntity<>(thingService.getThingNameByItemId(itemId), HttpStatus.OK);
     }
 }

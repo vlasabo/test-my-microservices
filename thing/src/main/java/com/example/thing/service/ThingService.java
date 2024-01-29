@@ -7,6 +7,8 @@ import com.example.thing.repository.redis.ThingItemHashRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -16,6 +18,7 @@ import java.util.Optional;
 public class ThingService {
     private final ThingRepository thingRepository;
     private final ThingItemHashRepository thingItemHashRepository;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public Optional<Thing> getThingById(long thingId) {
         return thingRepository.findById(thingId);
@@ -34,9 +37,11 @@ public class ThingService {
     public String getThingNameByItemId(long itemId){
         Optional<ThingItemHash> fromRedis = thingItemHashRepository.findById(itemId);
         if (fromRedis.isPresent()) {
+            logger.warn("return from Redis");
             return fromRedis.get().getThingName();
         }
 
+        logger.warn("return from DB");
         return getThingByItemId(itemId)
                 .map(Thing::getName)
                 .orElse("");
