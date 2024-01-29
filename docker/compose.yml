@@ -1,6 +1,6 @@
 services:
   config-server:
-    build: ./config-server
+    build: ../config-server
     image: config-server
     platform: linux/x86_64
     container_name: config-server
@@ -9,7 +9,7 @@ services:
 
 
   eureka-server:
-    build: ./eureka-server
+    build: ../eureka-server
     image: eureka-server
     platform: linux/x86_64
     container_name: eureka-server
@@ -20,7 +20,7 @@ services:
     restart: on-failure
 
   api-gateway:
-    build: ./api-gateway
+    build: ../api-gateway
     image: api-gateway
     platform: linux/x86_64
     container_name: api-gateway
@@ -29,7 +29,7 @@ services:
     restart: on-failure
 
   item-service:
-    build: ./item
+    build: ../item
     image: item
     platform: linux/x86_64
     container_name: item
@@ -41,7 +41,7 @@ services:
     restart: on-failure
 
   thing-service:
-    build: ./thing
+    build: ../thing
     image: thing
     platform: linux/x86_64
     container_name: thing
@@ -53,7 +53,7 @@ services:
     restart: on-failure
 
   thing-service2:
-    build: ./thing
+    build: ../thing
     image: thing2
     platform: linux/x86_64
     container_name: thing2
@@ -86,30 +86,30 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=root
 
-  keycloak-db:
-    image: postgres:13.7-alpine
-    restart: unless-stopped
-    environment:
-      - POSTGRES_DB=keycloak
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=root
-
-  keycloak:
-    depends_on:
-      keycloak-db:
-        condition: service_started
-    image: jboss/keycloak
-    restart: always
-    environment:
-      #      KEYCLOAK_USER: admin
-      #      KEYCLOAK_PASSWORD: admin
-      DB_VENDOR: postgres
-      DB_ADDR: keycloak-db
-      DB_DATABASE: keycloak
-      DB_USER: postgres
-      DB_PASSWORD: root
-    ports:
-      - "8080:8080"
+  #  keycloak-db:
+  #    image: postgres:13.7-alpine
+  #    restart: unless-stopped
+  #    environment:
+  #      - POSTGRES_DB=keycloak
+  #      - POSTGRES_USER=postgres
+  #      - POSTGRES_PASSWORD=root
+  #
+  #  keycloak:
+  #    depends_on:
+  #      keycloak-db:
+  #        condition: service_started
+  #    image: jboss/keycloak
+  #    restart: always
+  #    environment:
+  #      #      KEYCLOAK_USER: admin
+  #      #      KEYCLOAK_PASSWORD: admin
+  #      DB_VENDOR: postgres
+  #      DB_ADDR: keycloak-db
+  #      DB_DATABASE: keycloak
+  #      DB_USER: postgres
+  #      DB_PASSWORD: root
+  #    ports:
+  #      - "8080:8080"
 
   zookeeper:
     image: wurstmeister/zookeeper
@@ -155,6 +155,52 @@ services:
       - -c
       - redis-server --requirepass "redisRoot" #должен бы лежать в .env, но это не прод
 
+  #  Для полььзователей из РФ на момент 2024 года, увы, нужен ВПН для скачивания образов ниже.
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+    container_name: elasticsearch
+    environment:
+      - node.name=elasticsearch
+      - discovery.type=single-node
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+#    volumes:
+#      - ./esdata1:/usr/share/elasticsearch/data
+    ports:
+      - 9300:9300
+      - 9200:9200
+#    networks:
+#      backend:
+#        aliases:
+#          - "elasticsearch"
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.7.0
+    container_name: kibana
+    environment:
+      ELASTICSEARCH_URL: "http://elasticsearch:9300"
+    ports:
+      - 5601:5601
+#    networks:
+#      backend:
+#        aliases:
+#          - "kibana"
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.7.0
+    container_name: logstash
+    command: logstash -f /etc/logstash/conf.d/logstash.conf
+    volumes:
+      - ./config:/etc/logstash/conf.d
+    ports:
+      - "5000:5000"
+#    networks:
+#      backend:
+#        aliases:
+#          - "logstash"
 
 #  vault здесь только для тестов, в девмоде. Настройки по прежнему подтянутся из yaml
 #  vault:
@@ -169,3 +215,6 @@ services:
 #      - ./config:/vault/config
 #    cap_add:
 #      - IPC_LOCK
+networks:
+  backend:
+    driver: bridge

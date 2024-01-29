@@ -7,6 +7,7 @@ import lombok.Setter;
 
 
 public class SimpleMessage {
+    //тут еще тип события м т.п.
     private long itemId;
     private String thingName;
 

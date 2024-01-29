@@ -77,12 +77,20 @@
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>io.confluent</groupId>-->
-<!--            <artifactId>kafka-avro-serializer</artifactId>-->
-<!--            <version>4.0.0</version>-->
-<!--        </dependency>-->
-
+        <!--        <dependency>-->
+        <!--            <groupId>io.confluent</groupId>-->
+        <!--            <artifactId>kafka-avro-serializer</artifactId>-->
+        <!--            <version>4.0.0</version>-->
+        <!--        </dependency>-->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-brave</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>6.6</version>
+        </dependency>
 
 
         <dependency>
@@ -115,26 +123,26 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-<!--            <plugin>-->
-<!--                <groupId>org.apache.avro</groupId>-->
-<!--                <artifactId>avro-maven-plugin</artifactId>-->
-<!--                <version>1.11.2</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>schemas</id>-->
-<!--                        <phase>generate-sources</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>schema</goal>-->
-<!--                            <goal>protocol</goal>-->
-<!--                            <goal>idl-protocol</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <sourceDirectory>${project.basedir}/src/main/resources/</sourceDirectory>-->
-<!--                            <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.avro</groupId>-->
+            <!--                <artifactId>avro-maven-plugin</artifactId>-->
+            <!--                <version>1.11.2</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <id>schemas</id>-->
+            <!--                        <phase>generate-sources</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>schema</goal>-->
+            <!--                            <goal>protocol</goal>-->
+            <!--                            <goal>idl-protocol</goal>-->
+            <!--                        </goals>-->
+            <!--                        <configuration>-->
+            <!--                            <sourceDirectory>${project.basedir}/src/main/resources/</sourceDirectory>-->
+            <!--                            <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>-->
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
         </plugins>
     </build>
 

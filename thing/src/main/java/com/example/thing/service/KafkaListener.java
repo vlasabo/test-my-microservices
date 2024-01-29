@@ -30,7 +30,7 @@ public class KafkaListener {
                         final @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts
     ) throws JsonProcessingException {
         SimpleMessage simpleMessage = objectMapper.readValue(record.value(), SimpleMessage.class);
-        logger.error("!" + simpleMessage.toString());
+        logger.warn("!some text here {}", simpleMessage.toString());
         thingItemHashRepository.save(new ThingItemHash(simpleMessage.getItemId(), simpleMessage.getThingName()));
 //      тут немного логики по получению сообщения. Я понимаю что надо десериализовать либо черещ internallibs с
 //      объектом-сообщением, прикрученным как зависимость к сервисам, либо
